@@ -53,13 +53,15 @@ def print_get_anchors(centroids):
 	print(r)
 	return anchor_list
 
-def run_kmeans(ann_dims, anchor_num):
+def run_kmeans(ann_dims, anchor_num, show):
 	ann_num = ann_dims.shape[0]
 	iterations = 0
 	prev_assignments = np.ones(ann_num)*(-1)
 	iteration = 0
 	old_distances = np.zeros((ann_num, anchor_num))
-
+	
+	if show:
+		print(ann_dims)
 	indices = [random.randrange(ann_dims.shape[0]) for i in range(anchor_num)]
 	centroids = ann_dims[indices]
 	anchor_dim = ann_dims.shape[1]
@@ -90,7 +92,7 @@ def run_kmeans(ann_dims, anchor_num):
 		prev_assignments = assignments.copy()
 		old_distances = distances.copy()
 
-def generate_anchors(config, num_anchors=5):
+def generate_anchors(config, num_anchors=5, show=False):
 	train_imgs, train_labels = parse_annotation(config['train']['train_annot_folder'],
 												config['train']['train_image_folder'],
 												config['model']['labels'])
@@ -110,9 +112,9 @@ def generate_anchors(config, num_anchors=5):
 			annotation_dims.append(tuple(map(float, (relative_w,relatice_h))))
 
 	annotation_dims = np.array(annotation_dims)
-	centroids = run_kmeans(annotation_dims, num_anchors)
+	centroids = run_kmeans(annotation_dims, num_anchors, show)
 
 	# write anchors to file
-	print('\naverage IOU for', num_anchors, 'anchors:', '%0.2f' % avg_IOU(annotation_dims, centroids))
+	# print('\naverage IOU for', num_anchors, 'anchors:', '%0.2f' % avg_IOU(annotation_dims, centroids))
 	anchors_ret = print_get_anchors(centroids)
 	return anchors_ret
