@@ -90,7 +90,7 @@ def run_kmeans(ann_dims, anchor_num):
 		prev_assignments = assignments.copy()
 		old_distances = distances.copy()
 
-def generate_anchors(config):
+def generate_anchors(config, num_anchors=5):
 	train_imgs, train_labels = parse_annotation(config['train']['train_annot_folder'],
 												config['train']['train_image_folder'],
 												config['model']['labels'])
