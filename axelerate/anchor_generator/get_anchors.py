@@ -47,8 +47,8 @@ def print_get_anchors(centroids):
 	#there should not be comma after last anchor, that's why
 	r += '%0.5f,%0.5f' % (anchors[sorted_indices[-1:],0], anchors[sorted_indices[-1:],1])
 	r += "]"
-	anchor_list.append(anchors[sorted_indices[-1:], 0])
-	anchor_list.append(anchors[sorted_indices[-1:], 1])
+	anchor_list.append(anchors[sorted_indices[-1:], 0][0])
+	anchor_list.append(anchors[sorted_indices[-1:], 1][0])
 
 	print(r)
 	return anchor_list
