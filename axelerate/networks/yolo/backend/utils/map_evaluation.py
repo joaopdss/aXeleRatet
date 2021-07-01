@@ -41,6 +41,7 @@ class MapEvaluation(tensorflow.keras.callbacks.Callback):
         self.val_loss = [0]
         self.maps = [0]
         self.bestMap = 0
+        self.bestLoss = 1000
 
         if not isinstance(self._tensorboard, tensorflow.keras.callbacks.TensorBoard) and self._tensorboard is not None:
             raise ValueError("Tensorboard object must be a instance from keras.callbacks.TensorBoard")
@@ -53,17 +54,19 @@ class MapEvaluation(tensorflow.keras.callbacks.Callback):
             for label, average_precision in average_precisions.items():
                 print(self._yolo._labels[label], '{:.4f}'.format(average_precision))
             print('mAP: {:.4f}'.format(_map))
+            print('val_loss: {:.4f}'.format(logs.get("val_loss")))
 
             if epoch == 0:
                 print("Saving model on first epoch irrespective of mAP")
                 self.model.save(self._save_name,overwrite=True,include_optimizer=False)
             else:
-                if self._save_best and self._save_name is not None and _map > self.bestMap:
-                    print("mAP improved from {} to {}, saving model to {}.".format(self.bestMap, _map, self._save_name))
+                if self._save_best and self._save_name is not None and logs.get("val_loss") < self.bestLoss:
+                    print("val_loss improved from {} to {}, saving model to {}.".format(self.bestLoss, logs.get("val_loss"), self._save_name))
                     self.bestMap = _map
+                    self.bestLoss = logs.get("val_loss")
                     self.model.save(self._save_name,overwrite=True,include_optimizer=False)
                 else:
-                    print("mAP did not improve from {}.".format(self.bestMap))
+                    print("val_loss did not improve from {}.".format(self.bestLoss))
 
 
             self.loss.append(logs.get("loss"))
