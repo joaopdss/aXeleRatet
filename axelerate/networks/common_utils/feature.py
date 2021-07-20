@@ -70,6 +70,7 @@ class BaseFeatureExtractor(object):
 class FullYoloFeature(BaseFeatureExtractor):
     """docstring for ClassName"""
     def __init__(self, input_size, weights=None):
+		print('fullyolofeature: ' + str(weights))
         input_image = Input(shape=(input_size[0], input_size[1], 3))
 
         # the function to implement the orgnization layer (thanks to github.com/allanzelener/YAD2K)
@@ -205,7 +206,7 @@ class FullYoloFeature(BaseFeatureExtractor):
             pass
         else:
             print('Loaded backend weigths: '+weights)
-            self.feature_extractor.load_weights(weights)
+            self.feature_extractor.load_weights("./"+weights)
 
     def normalize(self, image):
         return image / 255.
