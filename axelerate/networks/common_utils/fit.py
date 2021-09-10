@@ -116,6 +116,9 @@ def train(model,
 	else:
 		callbacks= [early_stop, checkpoint, warm_up_lr, tensorboard_callback] 
 	
+	print("---------------")
+	print(type(custom_callback))
+	print("---------------")
 	if custom_callback is not None:
 		print('adding custom_callback')
 		callbacks.append(custom_callback)
