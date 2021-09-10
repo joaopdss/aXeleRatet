@@ -128,6 +128,9 @@ def train_from_config(config,project_folder):
 		
 		if "custom_callback" not in config['train']:
 			config['train']['custom_callback'] = None
+		
+		print('inside train.py')
+		print(type(config['train']['custom_callback']))
 
 		# 3. actual training 
 		model_layers, model_path = yolo.train(config['train']['train_image_folder'],
