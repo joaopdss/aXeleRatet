@@ -119,6 +119,8 @@ def train(model,
 	if custom_callback is not None:
 		print('adding custom_callback')
 		callbacks.append(custom_callback)
+	else:
+		print('not using any custom_callbacks')
 
 	# 4. training
 	try:
