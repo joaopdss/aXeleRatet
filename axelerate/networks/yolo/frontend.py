@@ -114,7 +114,7 @@ class YOLO(object):
 			  valid_img_folder="",
 			  valid_ann_folder="",
 			  first_trainable_layer=None,
-			  metrics="mAP"
+			  metrics="mAP",
 			  custom_callback=None):
 
 		# 1. get annotations		
