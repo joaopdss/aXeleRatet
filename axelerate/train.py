@@ -126,7 +126,7 @@ def train_from_config(config,project_folder):
 		# 2. Load the pretrained weights (if any) 
 		yolo.load_weights(config['weights']['full'], by_name=True)
 		
-		if "model_filename_callback" not in config['train']:
+		if "custom_callback" not in config['train']:
 			config['train']['custom_callback'] = None
 
 		# 3. actual training 
