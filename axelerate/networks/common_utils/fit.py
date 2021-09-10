@@ -117,6 +117,7 @@ def train(model,
 		callbacks= [early_stop, checkpoint, warm_up_lr, tensorboard_callback] 
 	
 	if custom_callback is not None:
+		print('adding custom_callback')
 		callbacks.append(custom_callback)
 
 	# 4. training
