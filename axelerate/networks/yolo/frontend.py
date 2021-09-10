@@ -136,9 +136,6 @@ class YOLO(object):
 		model = self._yolo_network.get_model(first_trainable_layer)
 		loss = self._get_loss_func(batch_size)
 		
-		print('inside frontend')
-		print(type(custom_callback))
-		
 		# 3. Run training loop
 		return train(model,
 				loss,
