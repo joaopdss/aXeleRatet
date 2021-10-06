@@ -43,8 +43,8 @@ class YoloLoss(object):
     def custom_loss(self, batch_size):
         """
         # Args
-            y_true : (N, 13, 13, 5, 6)
-            y_pred : (N, 13, 13, 5, 6)
+            y_true : (N, 13, 13, 10, 6)
+            y_pred : (N, 13, 13, 10, 6)
         
         """
         def loss_func(y_true, y_pred):
@@ -107,26 +107,27 @@ class _Activator(object):
     def _activate_pred_tensor(self, y_pred):
         """
         # Args
-            y_pred : (N, 13, 13, 5, 6)
-            cell_grid : (N, 13, 13, 5, 2)
+            y_pred : (N, 13, 13, 10, 6)
+            cell_grid : (N, 13, 13, 10, 2)
         
         # Returns
-            box_xy : (N, 13, 13, 5, 2)
+            box_xy : (N, 13, 13, 10, 2)
                 1) sigmoid activation
                 2) grid offset added
-            box_wh : (N, 13, 13, 5, 2)
+            box_wh : (N, 13, 13, 10, 2)
                 1) exponential activation
                 2) anchor box multiplied
-            box_conf : (N, 13, 13, 5, 1)
+            box_conf : (N, 13, 13, 10, 1)
                 1) sigmoid activation
-            box_classes : (N, 13, 13, 5, nb_class)
+            box_classes : (N, 13, 13, 10, nb_class)
         """
         # bx = sigmoid(tx) + cx, by = sigmoid(ty) + cy
         batch_size = tf.shape(y_pred)[0]
         grid_size_y = tf.shape(y_pred)[1]
         grid_size_x = tf.shape(y_pred)[2]
-        cell_grid = create_cell_grid(grid_size_x, grid_size_y, batch_size)
-        
+        nb_box = tf.shape(y_pred)[3]
+        cell_grid = create_cell_grid(grid_size_x, grid_size_y, batch_size, nb_box)
+
         pred_box_xy = tf.sigmoid(y_pred[..., :2]) + cell_grid
         pred_box_wh = tf.exp(y_pred[..., 2:4]) * self._anchor_boxes
         pred_box_conf = tf.sigmoid(y_pred[..., 4])
@@ -168,7 +169,7 @@ class _Activator(object):
         return true_box_xy, true_box_wh, true_box_conf, true_box_class
 
 
-def create_cell_grid(grid_size_x, grid_size_y, batch_size):
+def create_cell_grid(grid_size_x, grid_size_y, batch_size, nb_box):
     x_pos = tf.cast(tf.range(grid_size_x), dtype=tf.float32)
     y_pos = tf.cast(tf.range(grid_size_y), dtype=tf.float32)
     xx, yy = tf.meshgrid(x_pos, y_pos)
@@ -177,7 +178,7 @@ def create_cell_grid(grid_size_x, grid_size_y, batch_size):
     
     grid = tf.concat([xx, yy], axis=-1)         # (7, 7, 2)
     grid = tf.expand_dims(grid, -2)             # (7, 7, 1, 2)
-    grid = tf.tile(grid, (1,1,5,1))             # (7, 7, 5, 2)
+    grid = tf.tile(grid, (1,1,nb_box,1))             # (7, 7, 10, 2)
     grid = tf.expand_dims(grid, 0)              # (1, 7, 7, 1, 2)
     grid = tf.tile(grid, (batch_size,1,1,1,1))  # (N, 7, 7, 1, 2)
 

@@ -96,7 +96,6 @@ def generate_anchors(config, num_anchors=5, show=False):
 	train_imgs, train_labels = parse_annotation(config['train']['train_annot_folder'],
 												config['train']['train_image_folder'],
 												config['model']['labels'])
-
 	grid_w = config['model']['input_size']/32
 	grid_h = config['model']['input_size']/32
 
